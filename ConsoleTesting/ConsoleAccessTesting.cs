@@ -10,11 +10,33 @@ namespace ConsoleTesting
         static public int BufferHeight = 25;
         static public int BufferWidth = 80;
 
-        static public void ControlCursor()
+        static public void ControlCursor(ConsoleColor baseColor, int startX, int startY)
         {
+            var originalColor = Console.BackgroundColor;
+            Console.BackgroundColor = baseColor;
+
+            int xPos = startX;
+            int yPos = startY;
+
+            bool[][] characterSprite = new bool[7][];
+
+            bool[,] testing = new bool[7, 9];
+
+            Console.Write(testing.GetUpperBound(1));
+
+            characterSprite[0] = new bool[9] { false, false, true, true, true, true, true,false, false };
+            characterSprite[1] = new bool[9] { false, true, false, false, false, false, false, true, false };
+            characterSprite[2] = new bool[9] { true, true, false, true, false, true, false, true, true};
+            characterSprite[3] = new bool[9] { true, false, true, false, false, false, true, false, true };
+            characterSprite[4] = new bool[9] { true, true, false, true, true, true, false, true, true };
+            characterSprite[5] = new bool[9] { false, true, false, false, false, false, false, true, false };
+            characterSprite[6] = new bool[9] { false, false, true, true, true, true, true, false, false };
+
+            int characterXOffset = characterSprite.Length % 2 + characterSprite.Length / 2;
+            int characterYOffset = characterSprite[0].Length % 2 + characterSprite[0].Length / 2;
+
             ConsoleKeyInfo keyInfo = new ConsoleKeyInfo();
-            Console.WriteLine("height: " + Console.BufferHeight + " width: " + Console.BufferWidth);
-//            Console.SetBufferSize(BufferWidth, BufferHeight);
+            
             do
             {
                 keyInfo = Console.ReadKey(true);
@@ -33,6 +55,8 @@ namespace ConsoleTesting
                     case ConsoleKey.Escape:
                         break;
                     case ConsoleKey.Spacebar:
+                        Console.Write(' ');
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                         break;
                     case ConsoleKey.PageUp:
                         break;
@@ -45,29 +69,30 @@ namespace ConsoleTesting
                     case ConsoleKey.LeftArrow:
                         if(Console.CursorLeft > 0)
                         {
-                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-
-                            //Console.WriteLine("left: " + Console.CursorLeft +" top: "+ Console.CursorTop);
-
+                            Console.Write(' ');
+                            DrawCharacter(xPos, yPos, baseColor, ConsoleColor.Gray, characterSprite);
+                            Console.SetCursorPosition(Console.CursorLeft - 2, Console.CursorTop);
                         }
                         break;
                     case ConsoleKey.UpArrow:
                         if(Console.CursorTop > 0)
                         {
-                            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+                            Console.Write(' ');
+                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop - 1);
                         }
                         break;
                     case ConsoleKey.RightArrow:
                         if (Console.CursorLeft <BufferWidth)
                         {
-                            Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
-                            
+                            Console.Write(' ');
+                            //Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
                         }
                         break;
                     case ConsoleKey.DownArrow:
                         if(Console.CursorTop < BufferHeight)
                         {
-                            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
+                            Console.Write(' ');
+                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop + 1);
                         }
                         break;
                     case ConsoleKey.Select:
@@ -107,8 +132,10 @@ namespace ConsoleTesting
                     case ConsoleKey.A:
                         break;
                     case ConsoleKey.B:
+                        Console.BackgroundColor = ConsoleColor.Black;
                         break;
                     case ConsoleKey.C:
+                        Console.BackgroundColor = ConsoleColor.Cyan;
                         break;
                     case ConsoleKey.D:
                         break;
@@ -333,6 +360,30 @@ namespace ConsoleTesting
                 }
                 //Console.WriteLine(keyInfo.Key + " was pressed.");
             } while (keyInfo.Key != ConsoleKey.X);
+
+            Console.BackgroundColor = originalColor;
+        }
+
+        private static void DrawCharacter(int xPos, int yPos, ConsoleColor windowBackground, ConsoleColor characterColor, bool[][] sprite)
+        {
+            Console.Write(sprite.Length);
+            foreach (var item in sprite)
+            {
+                foreach (var innerItem in item)
+                {
+                    if(innerItem.Equals(true))
+                    {
+                        Console.BackgroundColor = characterColor;
+                        Console.Write(' ');
+                        Console.BackgroundColor = windowBackground;
+                    }
+                    else
+                    {
+                        Console.Write(' ');
+                    }
+                }
+                Console.SetCursorPosition(Console.CursorLeft - item.Length, Console.CursorTop + 1);
+            }
         }
 
         public ConsoleAccessTesting()

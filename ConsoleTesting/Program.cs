@@ -9,7 +9,7 @@ namespace ConsoleTesting
     {
         static void Main(string[] args)
         {
-            ConsoleAccessTesting.ControlCursor();
+            ConsoleAccessTesting.ControlCursor(ConsoleColor.Red, 0, 0);
         }
     }
 }
