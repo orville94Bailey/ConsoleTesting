@@ -14,6 +14,39 @@ namespace ConsoleTesting
         {
             var originalColor = Console.BackgroundColor;
             Console.BackgroundColor = baseColor;
+            var dummyBuffer = new ConsoleCell[25,80];
+
+            for (int i = 0; i < dummyBuffer.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j < dummyBuffer.GetUpperBound(1); j++)
+                {
+                    if( j % 2 == 1)
+                    {
+                        dummyBuffer[i, j] = new ConsoleCell('&', ConsoleColor.White, ConsoleColor.DarkBlue);
+                    }
+                    else
+                    {
+                        dummyBuffer[i, j] = new ConsoleCell('#', ConsoleColor.White, ConsoleColor.DarkGreen);
+                    }
+                }
+            }
+
+            try
+            {
+                for (int i = 0; i < dummyBuffer.GetUpperBound(0); i++)
+                {
+                    for (int j = 0; j < dummyBuffer.GetUpperBound(1); j++)
+                    {
+                        dummyBuffer[i, j].PrintCell();
+                    }
+                    Console.Write('\n');
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
 
             int xPos = startX;
             int yPos = startY;
@@ -69,9 +102,9 @@ namespace ConsoleTesting
                     case ConsoleKey.LeftArrow:
                         if(Console.CursorLeft > 0)
                         {
-                            Console.Write(' ');
+                            //Console.Write(' ');
                             DrawCharacter(xPos, yPos, baseColor, ConsoleColor.Gray, characterSprite);
-                            Console.SetCursorPosition(Console.CursorLeft - 2, Console.CursorTop);
+                            //Console.SetCursorPosition(Console.CursorLeft - 2, Console.CursorTop);
                         }
                         break;
                     case ConsoleKey.UpArrow:
@@ -366,7 +399,6 @@ namespace ConsoleTesting
 
         private static void DrawCharacter(int xPos, int yPos, ConsoleColor windowBackground, ConsoleColor characterColor, bool[][] sprite)
         {
-            Console.Write(sprite.Length);
             foreach (var item in sprite)
             {
                 foreach (var innerItem in item)
@@ -388,6 +420,47 @@ namespace ConsoleTesting
 
         public ConsoleAccessTesting()
         {
+        }
+    }
+
+    class ConsoleCell
+    {
+        public char cellCharacter { get; private set; }
+        public ConsoleColor cellForeground { get; private set; }
+        public ConsoleColor cellBackground { get; private set; }
+
+        public void PrintCell()
+        {
+            var originalForeground = Console.ForegroundColor;
+            var originalBackground = Console.BackgroundColor;
+
+            Console.BackgroundColor = cellBackground;
+            Console.ForegroundColor = cellForeground;
+            Console.Write(cellCharacter);
+
+            Console.BackgroundColor = originalBackground;
+            Console.ForegroundColor = originalForeground;
+        }
+
+        public ConsoleCell(char cellCharacter, ConsoleColor cellForeground, ConsoleColor cellBackground)
+        {
+            this.cellCharacter = cellCharacter;
+            this.cellForeground = cellForeground;
+            this.cellBackground = cellBackground;
+        }
+
+        public ConsoleCell(ConsoleColor cellForeground, ConsoleColor cellBackground)
+        {
+            this.cellCharacter = ' ';
+            this.cellBackground = cellBackground;
+            this.cellForeground = cellForeground;
+        }
+
+        public ConsoleCell()
+        {
+            this.cellCharacter = ' ';
+            this.cellBackground = ConsoleColor.Black;
+            this.cellForeground = ConsoleColor.White;
         }
     }
 }
